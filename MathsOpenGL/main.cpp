@@ -29,6 +29,26 @@ void mouse(int button, int state, int x, int y)
 		exit(0);*/
 }
 
+void menu(int n)
+{
+
+}
+
+//manage the menu creation and attach to right click button
+int createMenu()
+{
+	int mainmenu = glutCreateMenu(menu);
+
+	glutAddMenuEntry("test 1", 1);
+	glutAddMenuEntry("test 2", 2);
+	glutAddMenuEntry("test 3", 3);
+	glutAddMenuEntry("test 4", 4);
+
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
+
+	return mainmenu;
+}
+
 int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
@@ -40,6 +60,9 @@ int main(int argc, char** argv)
 	glutDisplayFunc(render);
 	glutKeyboardFunc(keyboard);
 	glutMouseFunc(mouse);
+
+	//create a menu
+	int mainmenu = createMenu();
 
 	glutMainLoop();
 }
