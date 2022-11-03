@@ -52,10 +52,12 @@ void keyboard(unsigned char c, int x, int y)
 		closed = true;
 		drawPoly = false;
 	}
+	//press esc key to clear the polygon finished or the polygon in construction
 	if (c == 27)
 		points.clear();
 }
 
+//manage mouse events
 void mouse(int button, int state, int x, int y)
 {
 	//if left mouse button is down then add the next point
@@ -68,6 +70,7 @@ void mouse(int button, int state, int x, int y)
 	}
 }
 
+//get the current position of the mouse
 void mouse_move(int x, int y)
 {
 	currentPoint = array<int, 2>{x, height - y};
@@ -79,6 +82,20 @@ void menu(int n)
 {
 	switch (n)
 	{
+	//choose color once the user started drawing the polygon
+	case 11 :
+		if (drawPoly)
+			glColor3f(1.0,0,0);
+		break;
+	case 12:
+		if (drawPoly)
+			glColor3f(0, 1.0, 0);
+		break;
+	case 13:
+		if (drawPoly)
+			glColor3f(0, 0, 1.0);
+		break;
+	//start the drawing process of a polygon when user click on the appropriate menu
 	case 2 :
 		drawPoly = true;
 		break;
