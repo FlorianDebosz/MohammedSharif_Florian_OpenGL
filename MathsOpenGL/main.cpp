@@ -1,32 +1,77 @@
 #include <GL/glut.h>
 #include <iostream>
+#include <vector>
+#include <array>
+
+using namespace std;
+
+int width = 640;
+int height = 480;
+
+static int mainMenu;
+static int subMenuColor;
+
+array<int, 2> currentPoint;
+vector<array<int, 2>> points;
+
+bool closed = false;
+bool drawPoly = false;
+
+//draw the line between the points selected by user
+void drawPolygon()
+{
+	if (!points.empty())
+	{
+		glBegin(GL_LINE_STRIP);
+
+		for (auto& pt : points)
+			glVertex2f((float)pt[0], (float)pt[1]);
+		auto& endPt = closed ? points.front() : currentPoint;
+		glVertex2f((float)endPt[0], (float)endPt[1]);
+
+		glEnd();
+	}
+}
 
 void render()
 {
+	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	/*glBegin(GL_TRIANGLES);
-		glColor3f(1, 0, 0);
-		glVertex2f(-0.5, -0.5);
-		glColor3f(0, 1, 0);
-		glVertex2f(0.5, -0.5);
-		glColor3f(0, 0, 1);
-		glVertex2f(0, 0.5);
-	glEnd();*/
+	//call drawPolygon
+	drawPolygon();
 
 	glutSwapBuffers();
 }
 
 void keyboard(unsigned char c, int x, int y)
 {
+	//press c to close the polygon and stop drawing the polygon
+	if (c == 'c')
+	{
+		closed = true;
+		drawPoly = false;
+	}
 	if (c == 27)
-		exit(0);
+		points.clear();
 }
 
 void mouse(int button, int state, int x, int y)
 {
-	/*if (button == GLUT_RIGHT_BUTTON)
-		exit(0);*/
+	//if left mouse button is down then add the next point
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && drawPoly)
+	{
+		if (closed)
+			points.clear();
+		closed = false;
+		points.push_back(currentPoint);
+	}
+}
+
+void mouse_move(int x, int y)
+{
+	currentPoint = array<int, 2>{x, height - y};
+	glutPostRedisplay();
 }
 
 //define what to do when a user click on a menu
@@ -34,8 +79,8 @@ void menu(int n)
 {
 	switch (n)
 	{
-	case 1 :
-		exit(0);
+	case 2 :
+		drawPoly = true;
 		break;
 	default :
 		break;
@@ -44,11 +89,15 @@ void menu(int n)
 }
 
 //manage the menu creation and attach to right click button
-int createMenu()
+void createMenu()
 {
-	int mainmenu = glutCreateMenu(menu);
+	subMenuColor = glutCreateMenu(menu);
+	glutAddMenuEntry("red", 11);
+	glutAddMenuEntry("green", 12);
+	glutAddMenuEntry("blue", 13);
 
-	glutAddMenuEntry("couleurs", 1);
+	mainMenu = glutCreateMenu(menu);
+	glutAddSubMenu("couleurs", subMenuColor);
 	glutAddMenuEntry("polygone à découper", 2);
 	glutAddMenuEntry("tracé fenêtre", 3);
 	glutAddMenuEntry("fenêtrage", 4);
@@ -56,7 +105,6 @@ int createMenu()
 
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 
-	return mainmenu;
 }
 
 int main(int argc, char** argv)
@@ -64,15 +112,19 @@ int main(int argc, char** argv)
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100,100);
-	glutInitWindowSize(640, 480);
+	glutInitWindowSize(width, height);
 	glutCreateWindow("Simple Window");
 
 	glutDisplayFunc(render);
 	glutKeyboardFunc(keyboard);
 	glutMouseFunc(mouse);
+	glutPassiveMotionFunc(mouse_move);
+
+	glMatrixMode(GL_PROJECTION);
+	glOrtho(0.0f, (float)width, 0.0f, (float)height, -1.0, 1.0);
 
 	//create a menu
-	int mainmenu = createMenu();
+	createMenu();
 
 	glutMainLoop();
 }
