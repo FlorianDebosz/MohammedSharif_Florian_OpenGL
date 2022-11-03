@@ -29,8 +29,17 @@ void mouse(int button, int state, int x, int y)
 		exit(0);*/
 }
 
+//define what to do when a user click on a menu
 void menu(int n)
 {
+	switch (n)
+	{
+	case 1 :
+		exit(0);
+		break;
+	default :
+		break;
+	}
 
 }
 
@@ -39,10 +48,11 @@ int createMenu()
 {
 	int mainmenu = glutCreateMenu(menu);
 
-	glutAddMenuEntry("test 1", 1);
-	glutAddMenuEntry("test 2", 2);
-	glutAddMenuEntry("test 3", 3);
-	glutAddMenuEntry("test 4", 4);
+	glutAddMenuEntry("couleurs", 1);
+	glutAddMenuEntry("polygone à découper", 2);
+	glutAddMenuEntry("tracé fenêtre", 3);
+	glutAddMenuEntry("fenêtrage", 4);
+	glutAddMenuEntry("remplissage", 5);
 
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 
