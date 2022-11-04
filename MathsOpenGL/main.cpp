@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <array>
+#include "CyrusBeck.h"
 
 using namespace std;
 
@@ -13,10 +14,12 @@ array<float, 3> windColor = {1,1,1};
 
 static int mainMenu;
 static int subMenuColor;
+static int subMenuWindow;
 
 array<int, 2> currentPoint;
 vector<array<int, 2>> points;
 vector<array<int, 2>> windowPoints;
+vector<array<int, 2>> cbPoints;
 
 bool closed = false;
 bool windowClosed = false;
@@ -59,6 +62,23 @@ void drawWindow()
 	}
 }
 
+void drawCyrusBeck()
+{
+	if (!cbPoints.empty())
+	{
+		glBegin(GL_LINE_STRIP);
+
+		glColor3f(1, 0, 1);
+
+		for (auto& pt : cbPoints)
+			glVertex2f((float)pt[0], (float)pt[1]);
+		auto& endPt = cbPoints.front();
+		glVertex2f((float)endPt[0], (float)endPt[1]);
+
+		glEnd();
+	}
+}
+
 void render()
 {
 	glClearColor(0, 0, 0, 0);
@@ -69,6 +89,9 @@ void render()
 
 	//call drawWindow
 	drawWindow();
+
+	//call drawCyrusBeck
+	drawCyrusBeck();
 
 	glutSwapBuffers();
 }
@@ -120,6 +143,8 @@ void mouse_move(int x, int y)
 //define what to do when a user click on a menu
 void menu(int n)
 {
+	CyrusBeck cB;
+
 	switch (n)
 	{
 	//choose color once the user started drawing the polygon
@@ -150,6 +175,9 @@ void menu(int n)
 		drawWind = true;
 		windowPoints.clear();
 		break;
+	case 41:
+		cbPoints = cB.cyrusBeck(points, windowPoints);
+		break;
 	default :
 		break;
 	}
@@ -164,11 +192,16 @@ void createMenu()
 	glutAddMenuEntry("green", 12);
 	glutAddMenuEntry("blue", 13);
 
+	subMenuWindow = glutCreateMenu(menu);
+	glutAddMenuEntry("Cyrus Beck", 41);
+	glutAddMenuEntry("Sutherland-ogdmann", 42);
+	glutAddMenuEntry("Ear cutting", 43);
+
 	mainMenu = glutCreateMenu(menu);
 	glutAddSubMenu("couleurs", subMenuColor);
 	glutAddMenuEntry("polygone à découper", 2);
 	glutAddMenuEntry("tracé fenêtre", 3);
-	glutAddMenuEntry("fenêtrage", 4);
+	glutAddSubMenu("fenêtrage", subMenuWindow);
 	glutAddMenuEntry("remplissage", 5);
 
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
