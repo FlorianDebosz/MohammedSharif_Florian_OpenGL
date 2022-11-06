@@ -132,9 +132,11 @@
   <ItemGroup>
     <ClCompile Include="CyrusBeck.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SutherlandHodgman.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CyrusBeck.h" />
+    <ClInclude Include="SutherlandHodgman.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

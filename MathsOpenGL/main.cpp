@@ -3,6 +3,7 @@
 #include <vector>
 #include <array>
 #include "CyrusBeck.h"
+#include "SutherlandHodgman.h"
 
 using namespace std;
 
@@ -20,6 +21,7 @@ array<int, 2> currentPoint;
 vector<array<int, 2>> points;
 vector<array<int, 2>> windowPoints;
 vector<array<int, 2>> cbPoints;
+vector<array<int, 2>> shPoints;
 
 bool closed = false;
 bool windowClosed = false;
@@ -79,6 +81,23 @@ void drawCyrusBeck()
 	}
 }
 
+void drawSutherlandHodgman()
+{
+	if (!shPoints.empty())
+	{
+		glBegin(GL_LINE_STRIP);
+
+		glColor3f(0.5, 0.1, 0.5);
+
+		for (auto& pt : shPoints)
+			glVertex2f((float)pt[0], (float)pt[1]);
+		auto& endPt = shPoints.front();
+		glVertex2f((float)endPt[0], (float)endPt[1]);
+
+		glEnd();
+	}
+}
+
 void render()
 {
 	glClearColor(0, 0, 0, 0);
@@ -92,6 +111,9 @@ void render()
 
 	//call drawCyrusBeck
 	drawCyrusBeck();
+
+	//call drawSutherlandHodgman
+	drawSutherlandHodgman();
 
 	glutSwapBuffers();
 }
@@ -144,6 +166,7 @@ void mouse_move(int x, int y)
 void menu(int n)
 {
 	CyrusBeck cB;
+	SutherlandHodgman sH;
 
 	switch (n)
 	{
@@ -177,6 +200,9 @@ void menu(int n)
 		break;
 	case 41:
 		cbPoints = cB.cyrusBeck(points, windowPoints);
+		break;
+	case 42:
+		shPoints = sH.sutherlandHodgman(points, windowPoints);
 		break;
 	default :
 		break;
