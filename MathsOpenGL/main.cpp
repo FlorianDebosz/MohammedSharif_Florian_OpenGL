@@ -87,7 +87,7 @@ void drawSutherlandHodgman()
 	{
 		glBegin(GL_LINE_STRIP);
 
-		glColor3f(0.5, 0.1, 0.5);
+		glColor3f(1, 1, 0);
 
 		for (auto& pt : shPoints)
 			glVertex2f((float)pt[0], (float)pt[1]);
